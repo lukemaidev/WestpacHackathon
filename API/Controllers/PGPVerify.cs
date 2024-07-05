@@ -17,7 +17,6 @@ namespace API.Controllers
                        new FileInfo(@".\Keys\private.asc"), // Private key
                        "private key password");
 
-            Console.WriteLine(signedString);
             return signedString;
         }
         public static bool CommunicationVerify(){
