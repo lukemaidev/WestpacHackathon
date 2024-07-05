@@ -19,13 +19,13 @@ namespace API.Controllers
 
             return signedString;
         }
-        public static bool CommunicationVerify(){
+        public static bool CommunicationVerify(String signature){
             // create an instance of the library
             PGPLib pgp = new PGPLib();
 
             // check the signature and extract the data 
             SignatureCheckResult signatureCheck =
-                pgp.VerifyFile(@"", // Input <-- ADD
+                pgp.VerifyString(signature,
                                @".\Keys\public.asc");// Public key
 
             if (signatureCheck == SignatureCheckResult.SignatureVerified){
