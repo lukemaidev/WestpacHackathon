@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.Models.Requests;
 using API.Models.Responses;
-using PgpCore;
 
 namespace API.Controllers;
 
@@ -25,7 +24,7 @@ public class VerifySignatureController : ControllerBase
 
         try
         {
-            return new VerifySignatureResponse(request.Communication, PGPVerify.CommunicationVerify(request.Signature));
+            return new VerifySignatureResponse(request.Communication, PGPVerify.CommunicationVerify(request.Signature).Result);
         }
         catch (Exception e)
         {

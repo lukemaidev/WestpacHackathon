@@ -1,39 +1,36 @@
-﻿using DidiSoft.Pgp;
+﻿using PgpCore;
 
 namespace API.Controllers
 {
     class PGPVerify
     {
-        public static string CommunicationSign(){
-            // message to be signed
-            string plainString = "Hello World";
+        public static async Task<string> CommunicationSign(string plainString){
 
-            // create an instance of the library
-            PGPLib pgp = new PGPLib();
+            // Load keys
+            string privateKey = File.ReadAllText(@".\Keys\private.asc");
+            EncryptionKeys encryptionKeys = new EncryptionKeys(privateKey, "password");
+
+            // create an instance of the library with keys
+            PGP pgp = new PGP(encryptionKeys);
 
             // sign
-            string signedString =
-            pgp.SignString(plainString,
-                       new FileInfo(@".\Keys\private.asc"), // Private key
-                       "private key password");
+            string signedString = await pgp.SignAsync(plainString);
 
             return signedString;
         }
-        public static bool CommunicationVerify(String signature){
-            // create an instance of the library
-            PGPLib pgp = new PGPLib();
+        public static async Task<bool> CommunicationVerify(string signature){
 
-            // check the signature and extract the data 
-            SignatureCheckResult signatureCheck =
-                pgp.VerifyString(signature,
-                               @".\Keys\public.asc");// Public key
+            // Load keys
+            string publicKey = File.ReadAllText(@".\Keys\public.asc");
+            EncryptionKeys encryptionKeys = new EncryptionKeys(publicKey);
 
-            if (signatureCheck == SignatureCheckResult.SignatureVerified){
-                return true;
-            }
-            else{
-                return false;
-            }
+            // Create an instance of hte library with keys
+            PGP pgp = new PGP(encryptionKeys);
+
+            // Verify
+            bool verified = await pgp.VerifyAsync(signature);
+
+            return verified;
         }
     }
 }
